@@ -8,10 +8,12 @@ namespace DRI\SugarCRM\Bootstrap;
 class Bootstrap
 {
     /**
-     *
+     * @param null|string $path
+     * @throws \Exception
      */
-    public static function boot()
+    public static function boot($path = null)
     {
+        self::ensureSugarPath($path);
         self::bootSugar();
         self::initDatabase();
         self::pauseTracker();
@@ -20,9 +22,51 @@ class Bootstrap
     }
 
     /**
+     * @param null|string $path
+     * @throws \Exception
+     */
+    public static function ensureSugarPath($path = null)
+    {
+        if (!self::isSugarPath()) {
+            $path = self::findSugarPath($path);
+
+            chdir($path);
+        }
+    }
+
+    /**
+     * @param null|string $path
+     * @return string
+     * @throws \Exception
+     */
+    public static function findSugarPath($path = null)
+    {
+        if ($path === null) {
+            $path = getcwd();
+        }
+
+        if (file_exists("$path/docroot/sugar_version.php")) {
+            $path = "$path/docroot";
+        } elseif (!file_exists("$path/sugar_version.php")) {
+            throw new \Exception('Unable to find sugar base path');
+        }
+
+        return $path;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isSugarPath()
+    {
+        $path = getcwd();
+        return file_exists("$path/sugar_version.php");
+    }
+
+    /**
      *
      */
-    public static function bootSugar()
+    public static function bootSugar($path = null)
     {
         if (!defined('sugarEntry')) {
             define('sugarEntry', true);

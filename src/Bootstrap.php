@@ -8,6 +8,22 @@ namespace DRI\SugarCRM\Bootstrap;
 class Bootstrap
 {
     /**
+     * @var array
+     */
+    private static $possibleSubDirs = array (
+        'docroot',
+        'src',
+    );
+
+    /**
+     * @param string $dir
+     */
+    public static function addPossibleSubDir($dir)
+    {
+        self::$possibleSubDirs[] = $dir;
+    }
+
+    /**
      * @param null|string $path
      * @throws \Exception
      */
@@ -45,9 +61,15 @@ class Bootstrap
             $path = getcwd();
         }
 
-        if (file_exists("$path/docroot/sugar_version.php")) {
-            $path = "$path/docroot";
-        } elseif (!file_exists("$path/sugar_version.php")) {
+        foreach (self::$possibleSubDirs as $possibleSubDir) {
+            $sugarVersionPath = "$path/$possibleSubDir/sugar_version.php";
+            if (file_exists($sugarVersionPath)) {
+                $path = "$path/{$possibleSubDir}";
+                break;
+            }
+        }
+
+        if (!file_exists("$path/sugar_version.php")) {
             throw new \Exception('Unable to find sugar base path');
         }
 

@@ -1,12 +1,12 @@
 {
-    "name": "dri-nordic/sugarcrm-bootstrap",
+    "name": "addoptify/sugarcrm-bootstrap",
     "type": "library",
     "license": "MIT",
     "description": "",
     "authors": [
         {
             "name": "Emil Kilhage",
-            "email": "emil.kilhage@dri-nordic.com"
+            "email": "emilkilhage@gmail.com"
         }
     ],
     "require": {},
